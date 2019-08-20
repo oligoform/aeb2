@@ -32,7 +32,11 @@
     line-height: 24px;
 	font-family:'Roboto Bold',sans-serif;
 }
-
+h4.card-header, h4.card-header a,
+.ort, .ort a,
+.category-list, .category-list a {
+	pointer-events: none; 
+    color: inherit !important;}
 
 
 /*

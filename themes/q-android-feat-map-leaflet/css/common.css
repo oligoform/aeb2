@@ -65,7 +65,7 @@ a {
     z-index: 0; /* Positionned under the app's canvas / z-index relative to #app-layout */
     overflow-y: scroll;
     -webkit-overflow-scrolling:touch; /* Enables inertial scrolling */
-    background-color: #FCFCFC;
+    background-color: #a6c5bc;
 }
 
 #app-menu .app-version{
@@ -123,12 +123,12 @@ a {
 #app-header, .panel-header {
 	position: absolute;
 	top: 0px;
-    left: 0px;
+	left: 0px;
 	width: 100%;
 	height: 56px;
 	text-align: center;
-    overflow: hidden;
-    z-index: 10; /* z-index relative to #app-canvas */
+	overflow: hidden;
+	z-index: 10; /* z-index relative to #app-canvas */
 }
 
 /* Slideup panel */
@@ -223,9 +223,9 @@ a {
  */
 
 .app-header, .panel-header {
-	background-color: #424242;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
-    color: #fff;
+	background-color: #821220;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+	color: #fff;
 }
 
 .app-header h1, .panel-header h1 {
@@ -347,18 +347,18 @@ a {
 }
 
 .menu-items li.menu-active-item a {
-	background-color: #F2F2F2;
+	background-color: #8fb15f;
 	white-space: nowrap;
 	display: block;
 	text-decoration: none;
 	-webkit-user-select: none; /* Block user selection */
 	-webkit-touch-callout: none; /* Work on iOS to block hyperlink menu */
-    font-family: 'Roboto Medium', sans-serif;
-    color: #424242;
-    font-size: 14px;
-    height: 48px;
-    line-height: 48px;
-    padding: 0px 16px 0px 16px;
+	font-family: 'Roboto Medium', sans-serif;
+	color: #424242;
+	font-size: 14px;
+	height: 48px;
+	line-height: 48px;
+	padding: 0px 16px 0px 16px;
 }
 
 #app-menu .ripple-drop {
@@ -616,3 +616,10 @@ a {
 	color: #FCC419;
 }
 
+.svglogo {
+    position: absolute;
+    bottom: -4px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}

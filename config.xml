@@ -21,7 +21,7 @@
 	<preference name="DisallowOverscroll" value="true" />
 	<preference name="webviewbounce" value="false" />
 
-	<!-- Custom preferences -->
+<!-- Custom preferences -->
 <edit-config target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
     <string>Bitte lassen Sie den Zugriff auf Ihren Standort zu, damit wir Ihnen Angebote in Ihrer Nähe zeigen können.</string>
 </edit-config>
@@ -32,7 +32,7 @@
 	<plugin name="cordova-plugin-splashscreen" source="npm" />
 	<plugin name="cordova-plugin-device" source="npm" />
 	<plugin name="cordova-plugin-statusbar" source="npm" />
-	<plugin name="cordova-plugin-geolocation" source="npm" />
+	<plugin name="cordova-plugin-geolocation" spec="~4.0.2" />
 
 	<!-- SplashScreen configuration -->
 	<preference name="AutoHideSplashScreen" value="false" />

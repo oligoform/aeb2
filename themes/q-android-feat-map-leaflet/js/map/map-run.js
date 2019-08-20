@@ -13,8 +13,8 @@ define([
         var MyMap = new Map({
             id:"map",
             default_data: {
-                center: { lat: 45.7640, lng: 4.8357 },
-                zoom: 6
+                center: {lat: 51.63364850999728, lng: 11.553529500961305}, 
+                zoom: 9
             }
         });
 

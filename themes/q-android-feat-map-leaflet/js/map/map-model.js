@@ -13,8 +13,8 @@ define(function (require) {
         localStorage: new Backbone.LocalStorage( "Map-" + Config.app_slug ),
         defaults: {
             id : "",
-            center: { lat: 51.6009, lng: 11.3928 },
-            zoom: 8
+            center: {lat: 51.63364850999728, lng: 11.553529500961305}, 
+                zoom: 9
         }
     });
 
