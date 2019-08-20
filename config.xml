@@ -26,6 +26,21 @@
     <string>Bitte lassen Sie den Zugriff auf Ihren Standort zu, damit wir Ihnen Angebote in Ihrer Nähe zeigen können.</string>
 </edit-config>
 
+<gap:config-file platform="ios" parent="CFBundleDevelopmentRegion" mode="replace">  
+        <array>  
+            <string>en-US</string>  
+        </array>  
+    </gap:config-file>  
+    <gap:config-file platform="ios" parent="CFBundleLocalizations" mode="replace">  
+        <array>              
+            <string>en</string>  
+            <string>de</string>          
+        </array>  
+    </gap:config-file>  <!-- olg20190820-->
+
+	<preference name="Fullscreen" value="true" /> <!-- olg20190820-->
+	        <access origin="*" /> <!-- olg20190820-->
+
 	<!-- PhoneGap plugin declaration -->
 	<plugin name="cordova-plugin-inappbrowser" source="npm" />
 	<plugin name="cordova-plugin-network-information" source="npm" />
