@@ -41,7 +41,7 @@
 	<preference name="Fullscreen" value="true" /> <!-- olg20190820-->
 	        <access origin="*" /> <!-- olg20190820-->
 
-			<platform name="ios"> <preference name="StatusBarOverlaysWebView" value="false" /> </platform>
+			<platform name="ios"> <preference name="StatusBarOverlaysWebView" value="false" /> </platform> <!-- olg20190820-->
 
 	<!-- PhoneGap plugin declaration -->
 	<plugin name="cordova-plugin-inappbrowser" source="npm" />
