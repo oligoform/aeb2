@@ -1,18 +1,30 @@
 /**
  * Leaflet map management and interactions with DOM
  */
+  
 
 define(function (require) {
 
     "use strict";
 
-
     var Backbone = require('backbone');
+	var App = require('core/theme-app');
     var _ = require('underscore');
     var Config = require('root/config');
     var $ = require('jquery');
     var L = require('theme/leaflet/leaflet');
+	require('theme/js/map/cluster/leaflet.markercluster');	
+
     var MapModel = require('theme/js/map/map-model');
+	
+	
+    App.on( 'network:offline', function(event){
+        // Get the current network state
+        var ns = TemplateTags.getNetworkState(true);
+        // Display the current network state
+		console.log('offline' );
+   });
+	
 
     return Backbone.Model.extend({
 
@@ -80,47 +92,61 @@ define(function (require) {
                     console.log(flattenedArray);
 
                     flattenedArray.forEach(function (entry, index) {
+									
+						let arrayId = Object.keys(entry)[0];	
+                        let location_id = entry[arrayId].locations.post_id;
+                        let location_name = entry[arrayId].locations !== null ? entry[arrayId].title.replace(/["]/g, "'") : '';          
+                        let location_address = entry[arrayId].locations !== null ? entry[arrayId].locations.location_address.replace(/["]/g, "'") : '';
+                        let location_postcode = entry[arrayId].locations !== null ? entry[arrayId].locations.location_postcode + ' ' : '';
+                        let location_region = entry[arrayId].locations !== null ? entry[arrayId].locations.location_region + '<br />' : '';
+                        let theTitle = entry[arrayId].title !== null ? entry[arrayId].title.replace(/["]/g, "'") : '';
+                        let barrierefrei = entry[arrayId].barrierefrei === "1" ? 'barrierefrei <br />' : '';
+                        let email = entry[arrayId].email !== "" ? '<br /> E-Mail: ' + entry[arrayId].email + '<br/>' : '';
+                        let telefonnummer = entry[arrayId].telefonnummer !== "" ? 'Telefonnummer: ' + entry[arrayId].telefonnummer : '';
+                        let freitext = entry[arrayId].freitext;
+						let frei = freitext ? getMoreContent(location_id, entry[arrayId].freitext) : '';//olg test 20190815
 
-                        let location_id = entry.locations.post_id;
-                        let location_name = entry.locations !== null ? entry.title.replace(/["]/g, "'") : '';
-
-                        function getMoreContent(content) {
-                           var wrapper = document.createElement('div');
-                           wrapper.innerHTML=content;
-
-                    
-
-                            console.log(wrapper)
-                            //Lightbox
-                            //add wrapper
-                            //closeButton
-                            //load content
-                            return '<p>mehr erfahren</p>';
-                        }
-
-                        let location_address = entry.locations !== null ? entry.locations.location_address.replace(/["]/g, "'") : '';
-                        let location_postcode = entry.locations !== null ? entry.locations.location_postcode + ' ' : '';
-                        let location_region = entry.locations !== null ? entry.locations.location_region + '<br />' : '';
-                        let theTitle = entry.title !== null ? entry.title.replace(/["]/g, "'") : '';
-                        let barrierefrei = entry.barrierefrei === "1" ? 'barrierefrei <br />' : '';
-                        let email = entry.email !== "" ? '<br /> E-Mail: ' + entry.email + '<br/>' : '';
-                        let telefonnummer = entry.telefonnummer !== "" ? 'Telefonnummer: ' + entry.telefonnummer : '';
-                        let freitext = getMoreContent(entry.freitext);
-
-
-
-                        let popupContent = `<p>${theTitle} <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${email}${telefonnummer} <br> ${freitext}</p>`;
+					    let popupContent = `<div id='${arrayId}'>${theTitle} <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${email}${telefonnummer} <br>${frei} </div>`; //olg test 20190815
 
 
 
                         obj_locations[index] = `{"type":"Feature","properties": {"name": "${location_name}", "popupContent": "${popupContent}" },
-					   "geometry": {"type": "Point","coordinates": [${entry.locations.location_longitude}, ${entry.locations.location_latitude}]}}`;
+					   "geometry": {"type": "Point","coordinates": [${entry[arrayId].locations.location_longitude}, ${entry[arrayId].locations.location_latitude}]}}`;
 
 
-                    })
+                    })       
+					
+						function getMoreContent(id, freitext) {    										
+                            var readMoreText = document.createElement('a');
+                            readMoreText.setAttribute('href', '#single/posts/'+id); //olg test 20190815
+							//readMoreText.addEventListener ('click', function() { showElem(freitext); }, false);
+                            readMoreText.setAttribute('class', 'readmore'+ id);
+                            readMoreText.innerText = 'mehr erfahren';
+							// readMoreText.onclick=showElem; //olg test 20190815
+ 
+							//document.body.apendChild(readMoreText);
+			                return readMoreText.outerHTML.replace(/["]/g, "'");
+							
+                        }   
+						
+						
+						function showElem(freitext) {
+//console.log(freitext);
+							var test = document.getElementsByClassName('readmore'+ id)
 
+						} 
+						
+						
+						
+						
+						
+		
                     var geojsonFeature = obj_locations;
                     geojsonFeature = '{"type": "FeatureCollection", "features": [' + geojsonFeature + ']}'
+					
+					localStorage.setItem("geoJsonData", geojsonFeature);
+					var storedData =  JSON.parse(localStorage.getItem("geoJsonData"));
+					//console.log('stored Data:' , storedData)
 
                     return geojsonFeature;
 
@@ -129,12 +155,19 @@ define(function (require) {
                     // console.log('data' + data);
                     var obj = JSON.parse(data);
 
+var mcg = L.markerClusterGroup({
+  chunkedLoading: true,
+  //singleMarkerMode: true,
+  spiderfyOnMaxZoom: true //olg test 20190815
+});
 
-
-                    L.geoJSON(obj, {
-                        onEachFeature: onEachFeature
-                    }).addTo(this.get('map_leaflet'));
+mcg.addLayer(L.geoJSON(obj, {onEachFeature: onEachFeature}))
+this.get('map_leaflet').addLayer(mcg)
+					//.addTo(this.get('map_leaflet'));
                     // marker.on('click', function(e) { console.log('click')})
+					
+
+					
                 }).catch(err => {
                     // // Do something for an error here
                     console.log('error')
@@ -197,5 +230,7 @@ define(function (require) {
             return this.get('map_leaflet') !== null && $map.length && $map.html().length;
         }
     });
+	
+	
 
 });

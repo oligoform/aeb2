@@ -6,7 +6,6 @@ define([
     'jquery',
     'core/theme-app',
     'theme/js/map/map-engine-leaflet',
-    //'theme/js/map/cluster/leaflet.markercluster'
     ], function($,App,Map) {
 
         //Initialize leaflet map object with default values

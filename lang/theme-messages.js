@@ -1,7 +1,7 @@
 /**
  * Messages that can be displayed in Themes.
  * See the Message module in core/messages.js and core/theme-app.js to see 
- * how those messages are used in App or Themes.
+ * how those messages are used in App or Themes. *** olg2019 ***
  */
 define( function ( require ) {
 
