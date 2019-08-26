@@ -145,7 +145,7 @@ define([
          * @desc Customizing the status bar to match the theme, relies on // https://github.com/apache/cordova-plugin-statusbar
          */
         try { // Testing if the Cordova plugin is available
-            StatusBar.backgroundColorByHexString("#821221");
+            StatusBar.backgroundColorByHexString("#212121");
         } catch(err) {
             console.log("StatusBar plugin not available - you're probably in the browser");
         }
@@ -411,8 +411,7 @@ define([
          * @todo messages should be centralized to ease translations
          */
 		if ( result.ok ) {
-            showMessage("Inhalte erfolgreich aktualisiert");
-            navigator.vibrate(1000); //olg201090826
+			showMessage("Content updated successfully");
 		}else{
 			showMessage(result.message);
 		}
@@ -558,7 +557,6 @@ define([
     // * Cell generic connection
     // * No network connection
     App.on( 'network:offline', function(event){
-        navigator.vibrate(1000); //olg201090826
 
         // Get the current network state
         var ns = TemplateTags.getNetworkState(true);
@@ -1067,15 +1065,5 @@ define([
         }
 
     }
-// Simple way: use of "default-route" (by default, "launch-route" = "default-route").
-// This is if you don't need to differentiate your "launch route" from your "default route"
-
-//Add our home page (will have the #my-home-route fragment and use the "my-home-template" to render):
-// App.addCustomRoute( 'map', 'map' ); //no need, its in map-run.js
-
-App.filter( 'default-route', function( default_route ) {
-    default_route = 'map';
-    return default_route ;
-} );
 
 });
