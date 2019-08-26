@@ -41,18 +41,19 @@
     </gap:config-file>  <!-- olg20190820-->
 
 	<!-- PhoneGap plugin declaration -->
-	<plugin name="cordova-plugin-inappbrowser" source="npm" />
+	<plugin name="cordova-plugin-inappbrowser" spec="~3.1.0" />
 	<plugin name="cordova-plugin-network-information" source="npm" />
-	<plugin name="cordova-plugin-splashscreen" source="npm" />
-	<plugin name="cordova-plugin-device" source="npm" />
-	<plugin name="cordova-plugin-statusbar" source="npm" />
+	<plugin name="cordova-plugin-splashscreen" spec="~5.0.3" />
+	<plugin name="cordova-plugin-device" spec="~2.0.3" />
+	<plugin name="cordova-plugin-statusbar" spec="~2.4.3" />
 	<plugin name="cordova-plugin-geolocation" spec="~4.0.2" />
+	<plugin name="cordova-plugin-vibration" spec="~3.1.1" />
 
 	<!-- SplashScreen configuration -->
-	<preference name="AutoHideSplashScreen" value="false" />
+	<preference name="AutoHideSplashScreen" value="true" />
 	<preference name="FadeSplashScreenDuration" value="1000" />
 	<preference name="ShowSplashScreenSpinner" value="false" />
-	<gap:config-file platform="ios" parent="UIStatusBarHidden"><true/></gap:config-file>
+	<gap:config-file platform="ios" parent="UIStatusBarHidden"><false/></gap:config-file>
 	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance"><false/></gap:config-file>
 
 <!-- olg20190820-->
