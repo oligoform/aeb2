@@ -96,7 +96,9 @@ define(function (require) {
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                //  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { //olg20190826
+                L.tileLayer('../../osm-tiles/{s}/{z}/{x}/{y}.png', { //local tiles
+
                     zoom: this.get('map_data').get('zoom'),
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
@@ -119,10 +121,10 @@ define(function (require) {
                 let promiseData = new Promise((resolve, reject) => {
 
 
-                   let getOnlineStatus = TemplateTags.getNetworkState(true);
+                    let getOnlineStatus = TemplateTags.getNetworkState(true);
 
                     // if (!getStoredData) {
-                        if (getOnlineStatus == 'online') {
+                    if (getOnlineStatus == 'online') {
                         fetch(url).then(response => {
                             return response.json()
                         }).then(data => {
