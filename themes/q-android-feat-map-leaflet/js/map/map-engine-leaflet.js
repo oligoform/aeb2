@@ -125,8 +125,8 @@ define(function (require) {
                 let obj_locations = [];
 
 
-                fetch(url).then(response => {
-                    return response.json();
+                fetch(url).then(response => { 
+                    return response.json(); // https://github.github.io/fetch/#error hier die offline all.jso kopie nehmen, wenn keine verbindung o.ä.
                 }).then(data => {
 
                     const flattenedArray = [].concat(...data);
