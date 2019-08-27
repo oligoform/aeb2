@@ -2,31 +2,36 @@
  * Leaflet map management and interactions with DOM
  */
 
-
 define(function (require) {
 
     "use strict";
 
     var Backbone = require('backbone');
     var App = require('core/theme-app');
+    var TemplateTags = require('core/theme-tpl-tags');
     var _ = require('underscore');
     var Config = require('root/config');
     var $ = require('jquery');
-    var L = require('theme/leaflet/leaflet');	
-	// require('theme/js/map/search/leaflet-search');   
-	require('theme/js/map/cluster/leaflet.markercluster');   
-	// require('theme/js/map/locateControl/L.Control.Locate');
-	
+    var L = require('theme/leaflet/leaflet');
+    //var L = require(['theme/leaflet/leaflet', 'theme/js/map/search/leaflet-search']);
+    //require('theme/js/map/search/leaflet-search');   
+    require('theme/js/map/cluster/leaflet.markercluster');
+    //require('theme/js/map/locateControl/L.Control.Locate');
+
 
 
     var MapModel = require('theme/js/map/map-model');
 
 
-    App.on('network:offline', function (event) {
+
+
+
+    App.on('network:online', function (event) {
         // Get the current network state
         var ns = TemplateTags.getNetworkState(true);
+        //console.log(ns);
         // Display the current network state
-        console.log('offline');
+
     });
 
 
@@ -71,7 +76,6 @@ define(function (require) {
                 this.remove();
 
 
-
                 function getMoreContent(id, notLocId, freitext) {
                     var readMoreText = document.createElement('a');
                     readMoreText.setAttribute('href', '#single/posts/' + id); //olg test 20190815
@@ -84,33 +88,18 @@ define(function (require) {
                     }
 
                     var wrapperPopupContent = document.getElementById(id);
-                    //console.log(wrapperPopupContent)
-                    //wrapperPopupContent.appendChild(readMoreText);
-
-                    //document.body.apendChild(readMoreText);
                     return readMoreText.outerHTML.replace(/["]/g, "'");
 
                 }
-
-
-                function showElem(freitext) {
-                    //console.log(freitext);
-                    var test = document.getElementsByClassName('readmore' + id)
-
-                }
-
 
                 //Initialize Leaflet map:
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
-                // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { //olg20190826
-                    L.tileLayer('./osm-tiles/{s}/{z}/{x}/{y}.png', { //local tiles
-                        zoom: this.get('map_data').get('zoom'),
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    zoom: this.get('map_data').get('zoom'),
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
-
-
 
 
                 function onEachFeature(feature, layer) {
@@ -120,28 +109,39 @@ define(function (require) {
                     }
                 }
 
-
                 const url = 'https://am-eisernen-band.de/wp-json/angebote/all';
 
                 let obj_locations = [];
+                let getStoredData = JSON.parse(localStorage.getItem("aLocationsJson"));
+                //isOnline = TemplateTags.getNetworkState(true);
 
 
-                fetch(url).then(response => { 
-                    return response.json(); // https://github.github.io/fetch/#error hier die offline all.jso kopie nehmen, wenn keine verbindung o.ä.
-                }).then(data => {
-
-                    const flattenedArray = [].concat(...data);
-
-                    //console.log(flattenedArray);
-
-                    var toStore = JSON.stringify(flattenedArray)
-
-                    localStorage.setItem("locationsJson", toStore);
+                let promiseData = new Promise((resolve, reject) => {
 
 
+                   let getOnlineStatus = TemplateTags.getNetworkState(true);
 
+                    // if (!getStoredData) {
+                        if (getOnlineStatus == 'online') {
+                        fetch(url).then(response => {
+                            return response.json()
+                        }).then(data => {
+                            let flattenedArray = [].concat(...data);
+                            let toStore = JSON.stringify(flattenedArray);
+                            localStorage.setItem("aLocationsJson", toStore);
+                            return JSON.parse(toStore);
+                        }).then(data => {
+                            resolve(data);
+                        });
+                    } else {
+                        resolve(getStoredData);
+                    }
 
-                    flattenedArray.forEach(function (entry, index) {
+                });
+
+                promiseData.then(data => {
+
+                    data.forEach(function (entry, index) {
 
                         let arrayId = Object.keys(entry)[0];
                         let location_id = entry[arrayId].locations.post_id;
@@ -151,21 +151,16 @@ define(function (require) {
                         let location_region = entry[arrayId].locations !== null ? entry[arrayId].locations.location_region + '<br />' : '';
                         let theTitle = entry[arrayId].title !== null ? entry[arrayId].title.replace(/["]/g, "'") : '';
                         let barrierefrei = entry[arrayId].barrierefrei === '1' ? 'barrierefrei <br />' : '';
-                        let email = entry[arrayId].email !== "" ? '<br /> E-Mail: ' + entry[arrayId].email + '<br/>' : '';
-                        //let email = entry[arrayId].email !== "" ? '<br /> <a href="mailto:' + entry[arrayId].email + '">Email</a><br/>' : '';
+                        let email = entry[arrayId].email !== "" ? `<br /> <a href='mailto: ${entry[arrayId].email}'>Email</a><br/>` : ''; //TemplateString MM
                         let telefonnummer = entry[arrayId].telefonnummer !== "" ? 'Telefon: ' + entry[arrayId].telefonnummer : '';
                         let freitext = entry[arrayId].freitext;
-                        let frei = freitext ? getMoreContent(location_id, arrayId, entry[arrayId].freitext) : ''; //olg test 20190815
-                        //let olggeo = ' <a href="https://maps.google.com/maps?daddr=' + entry[arrayId].locations.location_latitude + ',' + entry[arrayId].locations.location_longitude + '&amp;saddr=">Route</a> '; //olg test 20190820
-                        //let olggeo = ' test ' + entry[arrayId].locations.location_latitude + ',' + entry[arrayId].locations.location_longitude + ' ende  '; //olg test 20190820b
-//console.log (olggeo);
-                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} <br>${frei} </div>`; //olg test 20190815
+                        let frei = freitext ? getMoreContent(location_id, arrayId, entry[arrayId].freitext) : '';
+                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} ${email} <br>${frei} </div>`; //olg test 20190815
 
 
 
                         obj_locations[index] = `{"type":"Feature","properties": {"name": "${location_name}", "popupContent": "${popupContent}" },
 					   "geometry": {"type": "Point","coordinates": [${entry[arrayId].locations.location_longitude}, ${entry[arrayId].locations.location_latitude}]}}`;
-
 
                     })
 
@@ -174,14 +169,11 @@ define(function (require) {
                     geojsonFeature = '{"type": "FeatureCollection", "features": [' + geojsonFeature + ']}'
 
                     localStorage.setItem("geoJsonData", geojsonFeature);
-                    var storedData = JSON.parse(localStorage.getItem("geoJsonData"));
-                    //console.log('stored Data:' , storedData)
 
                     return geojsonFeature;
 
 
                 }).then(data => {
-                    // console.log('data' + data);
                     var obj = JSON.parse(data);
 
                     var mcg = L.markerClusterGroup({
@@ -194,10 +186,6 @@ define(function (require) {
                         onEachFeature: onEachFeature
                     }))
                     this.get('map_leaflet').addLayer(mcg)
-                    //.addTo(this.get('map_leaflet'));
-                    // marker.on('click', function(e) { console.log('click')})
-
-			
 
                     mcg.on('popupopen', function (popup) {
 
@@ -211,7 +199,6 @@ define(function (require) {
 
                         function toggleModal() {
                             myModal.classList.toggle("show-modal");
-                            //console.log(toggleModal)
                         }
 
                         function addModal() {
@@ -226,7 +213,7 @@ define(function (require) {
 
                         $(".readmore").click(function (event) {
                             event.preventDefault();
-                            var locationsCached = JSON.parse(localStorage.getItem("locationsJson"));
+                            var locationsCached = JSON.parse(localStorage.getItem("aLocationsJson"));
                             var getId = $(this).data('id');
 
                             function windowOnClick(event) {
@@ -238,15 +225,13 @@ define(function (require) {
 
                             locationsCached.forEach(function (entry, index) {
                                 let arrayId = Object.keys(entry)[0];
-                                //console.log(arrayId,getId)
-
 
                                 closeButton.addEventListener("click", toggleModal);
                                 window.addEventListener("click", windowOnClick);
                                 if (arrayId == getId) {
 
                                     let text = entry[arrayId].freitext;
-                        			let email = entry[arrayId].email !== "" ? '<a title="E-Mail" class="email" href="mailto:' + entry[arrayId].email + '"><i class="fa fa-envelope-o" aria-hidden="true"></i>' + entry[arrayId].email + '</a><br/>' : '';
+                                    let email = entry[arrayId].email !== "" ? '<a title="E-Mail" class="email" href="mailto:' + entry[arrayId].email + '"><i class="fa fa-envelope-o" aria-hidden="true"></i>' + entry[arrayId].email + '</a><br/>' : '';
                                     let linkname = entry[arrayId].linkname !== "" ? entry[arrayId].linkname : entry[arrayId].link_zum_produkt;
                                     let link = entry[arrayId].link_zum_produkt;
                                     let location_address = entry[arrayId].locations !== "" ? entry[arrayId].locations.location_address.replace(/["]/g, "'") : '';
@@ -254,10 +239,11 @@ define(function (require) {
                                     let location_region = entry[arrayId].locations !== "" ? entry[arrayId].locations.location_region : '';
                                     let theTitle = entry[arrayId].title !== "" ? entry[arrayId].title.replace(/["]/g, "'") : '';
                                     let barrierefrei = entry[arrayId].barrierefrei === '1' ? 'barrierefrei <br />' : '';
-                                    let telefonnummer = entry[arrayId].telefonnummer !== "" ? ' <a href=tel:"' + entry[arrayId].telefonnummer.replace(/[ ]/g, "") + '"> <i class="fa fa-phone-square" aria-hidden="true"></i>'+ entry[arrayId].telefonnummer + '</a>' : '';
-                                    let olggeo = ' <a class="mapsgeolink text-center" href="https://maps.google.com/maps?daddr=' + entry[arrayId].locations.location_latitude + ',' + entry[arrayId].locations.location_longitude + '&amp;saddr="><i class="fa fa-map-marker" aria-hidden="true"></i> Route hierhin</a> '; //olg test 20190820
+                                    let telefonnummer = entry[arrayId].telefonnummer !== "" ? ' <a href=tel:"' + entry[arrayId].telefonnummer.replace(/[ ]/g, "") + '"> <i class="fa fa-phone-square" aria-hidden="true"></i>' + entry[arrayId].telefonnummer + '</a>' : '';
+                                    let olggeo = ' <a class="mapsgeolink text-center" href="https://maps.google.com/maps?daddr=' + entry[arrayId].locations.location_latitude + ',' + entry[arrayId].locations.location_longitude + '&amp;saddr="><i class="fa fa-map-marker" aria-hidden="true"></i> Route hierhin</a> ';
+                                    //olg test 20190820
 
-// kategorien
+                                    // kategorien
                                     // Name und addresse (strasse PLZ Ort)
                                     // Telefon
                                     // 
@@ -296,18 +282,11 @@ define(function (require) {
 
                     });
 
-                }).then(data => {
-
-                    console.log('ready')
-
-
-
-
                 }).catch(err => {
                     // // Do something for an error here
                     console.log('error')
                 });
-				
+
 
                 //Memorize map position and zoom when zooming, moving and leaving the map:
                 this.get('map_leaflet').on('zoomend', this.saveCurrentData);
