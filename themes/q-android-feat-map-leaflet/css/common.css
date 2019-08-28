@@ -10,7 +10,7 @@
  * Fonts
  */
 
-@font-face {
+ @font-face {
 	font-family : "PT Serif Regular";
 	src : url('../fonts/PT-Serif-Regular.ttf');
 }
@@ -89,6 +89,7 @@ a {
     z-index: 10; /* Positionned above the app's menu / z-index relative to #app-layout */
     overflow: hidden;
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     box-shadow: -2px 0px 5px rgba(0,0,0,0.26);
 }
 
@@ -205,7 +206,8 @@ a {
     top: 0px;
 	background-repeat: no-repeat;
 	background-position: center;
-	-webkit-animation: refresh-effect 1s infinite;
+  -webkit-animation: refresh-effect 1s infinite;
+  animation: refresh-effect 1s infinite;
 	width:48px;
 	height:48px;
 	background-image:url('../img/refresh-icon.svg');
@@ -215,6 +217,9 @@ a {
 
 /* Spinning effect for refresh button */
 @-webkit-keyframes refresh-effect {
+	100%	{-webkit-transform: rotate(360deg);}
+}
+@keyframes refresh-effect {
 	100%	{-webkit-transform: rotate(360deg);}
 }
 
@@ -323,9 +328,11 @@ a {
 .menu-items {
     position: relative;
 	list-style: none;
-	margin: 56px 0px 0px 0px;
+/* 	margin: 56px 0px 0px 0px; */
+margin: 0;
 	padding: 0px;
 	width: 100%;
+	z-index:1000;
 }
 
 .menu-items li {
@@ -347,14 +354,15 @@ a {
 }
 
 .menu-items li.menu-active-item a {
-	background-color: #8fb15f;
+	background-color: #a6c5bc;
+	background-color: rgba(166, 197, 188, 0.84);
 	white-space: nowrap;
 	display: block;
 	text-decoration: none;
 	-webkit-user-select: none; /* Block user selection */
 	-webkit-touch-callout: none; /* Work on iOS to block hyperlink menu */
 	font-family: 'Roboto Medium', sans-serif;
-	color: #424242;
+	color: #81121f;
 	font-size: 14px;
 	height: 48px;
 	line-height: 48px;
@@ -622,4 +630,6 @@ a {
     border: 0;
     padding: 0;
     margin: 0;
+    z-index: 0;
+    width: 100%;
 }
