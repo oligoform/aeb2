@@ -109,6 +109,7 @@ define(function (require) {
                 minZoom: 8,
                 maxZoom: 18,
                 maxBounds: bounds,
+                maxBoundsViscosity: 1, 
 
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));

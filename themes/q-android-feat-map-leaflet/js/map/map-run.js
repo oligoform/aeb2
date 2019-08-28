@@ -20,7 +20,8 @@ define([
                 zoom: 9,
                 minZoom: 8,
                 maxZoom: 18,
-                maxBounds: bounds
+                maxBounds: bounds,
+                maxBoundsViscosity: 1,
 
             }
         });

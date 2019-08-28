@@ -8,7 +8,7 @@ define(function (require) {
     var Backbone = require('backbone');
     var Config = require( 'root/config' );
     require('localstorage');
-    
+
     var southWest = L.latLng(50.34971801127329, 10.530405564491431),
     northEast = L.latLng(52.345956148393554, 12.126833777143432),
     bounds = L.latLngBounds(southWest, northEast);
@@ -22,6 +22,7 @@ define(function (require) {
                 minZoom: 8,
                 maxZoom: 18,
                 maxBounds: bounds,
+                maxBoundsViscosity: 1, 
 
         }
     });
