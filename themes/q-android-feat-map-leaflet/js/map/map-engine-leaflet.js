@@ -96,9 +96,7 @@ define(function (require) {
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { //olg20190826
-                // L.tileLayer('../../osm-tiles/{s}/{z}/{x}/{y}.png', { //local tiles
-
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     zoom: this.get('map_data').get('zoom'),
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
@@ -115,22 +113,41 @@ define(function (require) {
 
                 let obj_locations = [];
                 let getStoredData = JSON.parse(localStorage.getItem("aLocationsJson"));
-                //isOnline = TemplateTags.getNetworkState(true);
-
 
                 let promiseData = new Promise((resolve, reject) => {
 
-
                     let getOnlineStatus = TemplateTags.getNetworkState(true);
 
-                    // if (!getStoredData) {
-                    if (getOnlineStatus == 'online') {
+                    if (!getStoredData) {
+                        // if (getOnlineStatus == 'online') {
                         fetch(url).then(response => {
                             return response.json()
                         }).then(data => {
                             let flattenedArray = [].concat(...data);
+                            console.log(flattenedArray)
+
+                            //Indizee Array zum verarbeiten
+                            let indexArray = []
+
+                            flattenedArray.forEach(element => {
+                                indexArray.push(Object.keys(element)[0]);
+                            });
+
+                            console.log(indexArray);
+
+                            // Array in einzelne Informationen zerlegen
+                            flattenedArray.forEach(entry => {
+                                let arrayId = Object.keys(entry)[0];
+
+                                let singleInformation = `{"id_1":${entry[arrayId].id_1},"ort_id":${entry[arrayId].ort_id},"ort_title":${entry[arrayId].ort_title},"title":${entry[arrayId].title},"freitext":${entry[arrayId].freitext},"email":${entry[arrayId].email},"link_zum_produkt":${entry[arrayId].link_zum_produkt},"linkname":${entry[arrayId].linkname},"telefonnummer":${entry[arrayId].telefonnummer},locations:{"post_id":${entry[arrayId].locations.post_id},"location_slug":${entry[arrayId].locations.location_slug},"location_name":${entry[arrayId].locations.location_name},"location_address":${entry[arrayId].locations.location_address},"location_town":${entry[arrayId].locations.location_town},"location_state":${entry[arrayId].locations.location_state},"location_postcode":${entry[arrayId].locations.location_postcode},"location_region":${entry[arrayId].locations.location_region},"location_latitude":${entry[arrayId].locations.location_latitude},"location_longitude":${entry[arrayId].locations.location_longitude}}}`
+                                singleInformation = JSON.stringify(singleInformation);
+                                localStorage.setItem('aEntry_' + arrayId, singleInformation);
+
+                            });
+
+
                             let toStore = JSON.stringify(flattenedArray);
-                            localStorage.setItem("aLocationsJson", toStore);
+                            //   localStorage.setItem("aLocationsJson", toStore);
                             return JSON.parse(toStore);
                         }).then(data => {
                             resolve(data);
@@ -158,8 +175,6 @@ define(function (require) {
                         let freitext = entry[arrayId].freitext;
                         let frei = freitext ? getMoreContent(location_id, arrayId, entry[arrayId].freitext) : '';
                         let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} ${email} <br>${frei} </div>`; //olg test 20190815
-
-
 
                         obj_locations[index] = `{"type":"Feature","properties": {"name": "${location_name}", "popupContent": "${popupContent}" },
 					   "geometry": {"type": "Point","coordinates": [${entry[arrayId].locations.location_longitude}, ${entry[arrayId].locations.location_latitude}]}}`;
