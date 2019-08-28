@@ -9,14 +9,18 @@ define([
     ], function($,App,Map) {
 
         //Initialize leaflet map object with default values
-		
+        var southWest = L.latLng(50.34971801127329, 10.530405564491431),
+        northEast = L.latLng(52.345956148393554, 12.126833777143432),
+        bounds = L.latLngBounds(southWest, northEast);
+
         var MyMap = new Map({
             id:"map",
             default_data: {
                 center: {lat: 51.63364850999728, lng: 11.553529500961305}, 
                 zoom: 9,
                 minZoom: 8,
-                maxZoom: 18
+                maxZoom: 18,
+                maxBounds: bounds
 
             }
         });

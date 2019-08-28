@@ -93,6 +93,13 @@ define(function (require) {
                 }
 
                 //Initialize Leaflet map:
+                // var highLat=51.8729356,
+                //     highLng=11.9943745,
+                //     lowLat=51.1338139,
+                //     lowLng=10.6675855;
+                    var southWest = L.latLng(50.34971801127329, 10.530405564491431),
+                        northEast = L.latLng(52.345956148393554, 12.126833777143432),
+                        bounds = L.latLngBounds(southWest, northEast);
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
@@ -101,6 +108,7 @@ define(function (require) {
                         zoom: this.get('map_data').get('zoom'),
                 minZoom: 8,
                 maxZoom: 18,
+                maxBounds: bounds,
 
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
