@@ -96,8 +96,8 @@ define(function (require) {
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
-                //  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { //olg20190826
-                L.tileLayer('../../osm-tiles/{s}/{z}/{x}/{y}.png', { //local tiles
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { //olg20190826
+                // L.tileLayer('../../osm-tiles/{s}/{z}/{x}/{y}.png', { //local tiles
 
                     zoom: this.get('map_data').get('zoom'),
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
