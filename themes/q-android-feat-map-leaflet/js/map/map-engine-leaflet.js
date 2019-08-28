@@ -96,8 +96,8 @@ define(function (require) {
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
-                // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                L.tileLayer(cordova.file.dataDirectory+'NoCloud/tile_{z}_{x}_{y}.png', {
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                // L.tileLayer(cordova.file.dataDirectory+'NoCloud/tile_{z}_{x}_{y}.png', {
                         zoom: this.get('map_data').get('zoom'),
                 minZoom: 8,
                 maxZoom: 18,
