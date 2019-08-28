@@ -140,7 +140,7 @@ define(function (require) {
                                 let arrayId = Object.keys(entry)[0];
 
                                 let singleInformation = `{"id_1":${entry[arrayId].id_1},"ort_id":${entry[arrayId].ort_id},"ort_title":${entry[arrayId].ort_title},"title":${entry[arrayId].title},"freitext":${entry[arrayId].freitext},"email":${entry[arrayId].email},"link_zum_produkt":${entry[arrayId].link_zum_produkt},"linkname":${entry[arrayId].linkname},"telefonnummer":${entry[arrayId].telefonnummer},locations:{"post_id":${entry[arrayId].locations.post_id},"location_slug":${entry[arrayId].locations.location_slug},"location_name":${entry[arrayId].locations.location_name},"location_address":${entry[arrayId].locations.location_address},"location_town":${entry[arrayId].locations.location_town},"location_state":${entry[arrayId].locations.location_state},"location_postcode":${entry[arrayId].locations.location_postcode},"location_region":${entry[arrayId].locations.location_region},"location_latitude":${entry[arrayId].locations.location_latitude},"location_longitude":${entry[arrayId].locations.location_longitude}}}`
-                                singleInformation = JSON.stringify(singleInformation);
+                                //singleInformation = JSON.stringify(singleInformation);
                                 localStorage.setItem('aEntry_' + arrayId, singleInformation);
 
                             });
