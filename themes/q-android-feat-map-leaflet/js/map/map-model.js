@@ -14,7 +14,10 @@ define(function (require) {
         defaults: {
             id : "",
             center: {lat: 51.63364850999728, lng: 11.553529500961305}, 
-                zoom: 9
+                zoom: 9,
+                minZoom: 8,
+                maxZoom: 18
+
         }
     });
 
