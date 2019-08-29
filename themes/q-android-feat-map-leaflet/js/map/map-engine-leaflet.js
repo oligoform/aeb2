@@ -237,7 +237,7 @@ define(function (require) {
 
                             var locationsCached = fetchedData;
 
-                            console.log(fetchedData)
+                            // console.log(fetchedData)
                             var getId = $(this).data('id');
 
                             function windowOnClick(event) {
