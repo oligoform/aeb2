@@ -53,7 +53,6 @@ define(function (require) {
          * Initialize map data and leaflet map
          */
         initMap: function () {
-            localStorage.clear(); // test, if the app is "overloaded"
             if (!this.isMapActive() && $('#' + this.get('id')).length) {
 
                 //Instanciate new map model:
