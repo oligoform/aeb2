@@ -110,6 +110,9 @@
 	<gap:splash src="splashscreens/Default-Portrait~iphone.png" gap:platform="ios" width="320" height="480" /> -->
 
 <platform name="ios">
+<preference name="BackupWebStorage" value="none" />
+<preference name="iosPersistentFileLocation" value="Library" />
+
 <icon src="res/icon/ios/icon-1024.png" width="1024" height="1024"/>
 <icon src="res/icon/ios/icon-small.png" width="29" height="29"/>
 <icon src="res/icon/ios/icon-small@2x.png" width="58" height="58"/>
@@ -165,6 +168,8 @@
 
 </platform>
 <platform name="android">
+<preference name="AndroidPersistentFileLocation" value="Internal" />
+
 <preference name="SplashMaintainAspectRatio" value="true"/>
 <preference name="SplashShowOnlyFirstTime" value="true"/>
 <icon density="ldpi" src="res/icon/android/ldpi.png"/>
