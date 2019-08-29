@@ -84,7 +84,7 @@ define(function (require) {
                 }
 
                 //Initialize Leaflet map:
-L.Icon.Default.imagePath = "./leaflet/images/"; //Url to the image folder | This specifies image path for marker icon. 
+//L.Icon.Default.imagePath = "./leaflet/images/"; //Url to the image folder | This specifies image path for marker icon. 
 
                 var southWest = L.latLng(50.34971801127329, 10.530405564491431),
                     northEast = L.latLng(52.345956148393554, 12.126833777143432),
