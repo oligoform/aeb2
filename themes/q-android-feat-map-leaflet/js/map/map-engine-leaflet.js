@@ -123,7 +123,7 @@ define(function (require) {
                             return response.json()
                         }).then(data => {
                             let flattenedArray = [].concat(...data);
-                            console.log(flattenedArray)
+                            // console.log(flattenedArray)
 
                             //Indizee Array zum verarbeiten
                             let indexArray = []
@@ -188,7 +188,7 @@ define(function (require) {
                         let telefonnummer = entry[arrayId].telefonnummer !== "" ? 'Telefon: ' + entry[arrayId].telefonnummer : '';
                         let freitext = entry[arrayId].freitext;
                         let frei = freitext ? getMoreContent(location_id, arrayId, entry[arrayId].freitext) : '';
-                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} ${email} <br>${frei} </div>`; //olg test 20190815
+                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} ${email} <br>${frei} </div>`; 
 
                         obj_locations[index] = `{"type":"Feature","properties": {"name": "${location_name}", "popupContent": "${popupContent}" },
 					   "geometry": {"type": "Point","coordinates": [${entry[arrayId].locations.location_longitude}, ${entry[arrayId].locations.location_latitude}]}}`;
