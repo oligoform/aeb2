@@ -84,7 +84,6 @@ define(function (require) {
                 }
 
                 //Initialize Leaflet map:
-//L.Icon.Default.imagePath = "./leaflet/images/"; //Url to the image folder | This specifies image path for marker icon. 
 
                 var southWest = L.latLng(50.34971801127329, 10.530405564491431),
                     northEast = L.latLng(52.345956148393554, 12.126833777143432),
@@ -196,14 +195,7 @@ define(function (require) {
 
                     })
 
-var geojsonMarkerOptions = {
-	radius: 8,
-	fillColor: "#ff7800",
-	color: "#000",
-	weight: 1,
-	opacity: 1,
-	fillOpacity: 0.8
-};
+
                     var geojsonFeature = obj_locations;
                     geojsonFeature = '{"type": "FeatureCollection", "features": [' + geojsonFeature + ']}'
 
@@ -220,24 +212,9 @@ var geojsonMarkerOptions = {
                         //singleMarkerMode: true,
                         spiderfyOnMaxZoom: true //olg test 20190815
                     });
-                    
+
                     mcg.addLayer(L.geoJSON(obj, {
-	                    onEachFeature: onEachFeature
-
-/* //klappt nicht
-pointToLayer: function (feature, latlng) {
-		return L.circleMarker(latlng, geojsonMarkerOptions);
-	}
-*/
-
-//funktioniert so; nur kein click
-/*
-onEachFeature: function (feature, layer) {
-        // set icon to a new DivIcon
-        layer.setIcon(new L.DivIcon());
-    }
-*/
-
+                        onEachFeature: onEachFeature
                     }))
                     this.get('map_leaflet').addLayer(mcg)
 
