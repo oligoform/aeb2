@@ -1,7 +1,7 @@
 /**
  * Leaflet map management and interactions with DOM
  */
-
+// version from 20190828
 define(function (require) {
 
     "use strict";
@@ -18,7 +18,12 @@ define(function (require) {
     require('theme/js/map/cluster/leaflet.markercluster');
     //require('theme/js/map/locateControl/L.Control.Locate');
 
+
+
     var MapModel = require('theme/js/map/map-model');
+
+
+
 
 
     App.on('network:online', function (event) {
@@ -46,6 +51,10 @@ define(function (require) {
             //Bind callback methods to this:
             _.bindAll(this, 'update', 'saveCurrentData');
         },
+
+
+
+
 
 
 
@@ -85,20 +94,10 @@ define(function (require) {
 
                 //Initialize Leaflet map:
 
-                var southWest = L.latLng(50.34971801127329, 10.530405564491431),
-                    northEast = L.latLng(52.345956148393554, 12.126833777143432),
-                    bounds = L.latLngBounds(southWest, northEast);
-
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
                 this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
                 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     zoom: this.get('map_data').get('zoom'),
-
-                    minZoom: 8,
-                    maxZoom: 18,
-                    maxBounds: bounds,
-                    maxBoundsViscosity: 1,
-
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
 
@@ -113,12 +112,14 @@ define(function (require) {
                 const url = 'https://am-eisernen-band.de/wp-json/angebote/all';
 
                 let obj_locations = [];
-                let getOnlineStatus = TemplateTags.getNetworkState(true);
-                let getStoredData = JSON.parse(localStorage.getItem("indexArray"));
+               // let getStoredData = JSON.parse(localStorage.getItem("indexArray"));
 
                 let promiseData = new Promise((resolve, reject) => {
 
-                    if (getOnlineStatus == 'online') {
+                    let getOnlineStatus = TemplateTags.getNetworkState(true);
+
+                    // if (!getStoredData) {
+                        // if (getOnlineStatus == 'online') {
                         fetch(url).then(response => {
                             return response.json()
                         }).then(data => {
@@ -132,43 +133,36 @@ define(function (require) {
                                 indexArray.push(Object.keys(element)[0]);
                             });
 
-                            indexArray = JSON.stringify(indexArray)
-
                             localStorage.setItem('indexArray', indexArray);
+           
 
-                            let singleInformation = {};
                             // Array in einzelne Informationen zerlegen
-                            flattenedArray.forEach((entry, index) => {
+                            flattenedArray.forEach(entry => {
                                 let arrayId = Object.keys(entry)[0];
-                                let idNa = `${entry[arrayId].id_1 ? entry[arrayId].id_1 : ''}`
-                                let freitextConverted = `${entry[arrayId].freitext ? JSON.stringify(entry[arrayId].freitext) : '""'}`
-
-                                singleInformation = `{"${arrayId}" : { "id":${idNa},"ort_id":${entry[arrayId].ort_id ? entry[arrayId].ort_id : ''},"ort_title":"${entry[arrayId].ort_title ? entry[arrayId].ort_title.replace(/["]/g, "'") : ''}","title": "${entry[arrayId].title ? entry[arrayId].title.replace(/["]/g, "'") : ''}", "freitext":${freitextConverted}, "email":"${entry[arrayId].email ? entry[arrayId].email : ''}", "link_zum_produkt":"${entry[arrayId].link_zum_produkt ? entry[arrayId].link_zum_produkt.replace(/["]/g, "'") : ''}", "linkname":"${entry[arrayId].linkname ? entry[arrayId].linkname : ''}", "telefonnummer":"${entry[arrayId].telefonnummer ? entry[arrayId].telefonnummer : ''}", "locations" : { "post_id":${entry[arrayId].locations.post_id ? entry[arrayId].locations.post_id : ''}, "location_slug":"${entry[arrayId].locations.location_slug ? entry[arrayId].locations.location_slug.replace(/["]/g, "'") : ''}", "location_name":"${entry[arrayId].locations.location_name ? entry[arrayId].locations.location_name.replace(/["]/g, "'") : ''}","location_address":"${entry[arrayId].locations.location_address ? entry[arrayId].locations.location_address.replace(/["]/g, "'") : ''}","location_town": "${entry[arrayId].locations.location_town ? entry[arrayId].locations.location_town.replace(/["]/g, "'") : ''}","location_state": "${entry[arrayId].locations.location_state ? entry[arrayId].locations.location_state.replace(/["]/g, "'") : ''}","location_postcode": "${entry[arrayId].locations.location_postcode ? entry[arrayId].locations.location_postcode.replace(/["]/g, "'") : ''}","location_region": "${entry[arrayId].locations.location_region ? entry[arrayId].locations.location_region.replace(/["]/g, "'") : ''}","location_latitude": "${entry[arrayId].locations.location_latitude ? entry[arrayId].locations.location_latitude.replace(/["]/g, "'") : ''}","location_longitude": "${entry[arrayId].locations.location_longitude ? entry[arrayId].locations.location_longitude.replace(/["]/g, "'") : ''}"}}}`;
+                                let singleInformation = `{"id": ${entry[arrayId].id_1 ? entry[arrayId].id_1 : ''}, "ort_id": ${entry[arrayId].ort_id ? entry[arrayId].ort_id : ''}, "ort_title": "${entry[arrayId].ort_title ? entry[arrayId].ort_title.replace(/["]/g, "'") : ''}","title": "${entry[arrayId].title ? entry[arrayId].title.replace(/["]/g, "'") : ''}","freitext": "${entry[arrayId].freitext ? entry[arrayId].freitext : ''}","email": "${entry[arrayId].email ? entry[arrayId].email : ''}","link_zum_produkt": "${entry[arrayId].link_zum_produkt ? entry[arrayId].link_zum_produkt.replace(/["]/g, "'") : ''}","linkname": "${entry[arrayId].linkname ? entry[arrayId].linkname : ''}","telefonnummer": "${entry[arrayId].telefonnummer ? entry[arrayId].telefonnummer:''}","post_id": ${entry[arrayId].locations.post_id ? entry[arrayId].locations.post_id : ''},"location_slug": "${entry[arrayId].locations.location_slug ? entry[arrayId].locations.location_slug.replace(/["]/g, "'") : ''}","location_name": "${entry[arrayId].locations.location_name ? entry[arrayId].locations.location_name.replace(/["]/g, "'") : ''}","location_address": "${entry[arrayId].locations.location_address ? entry[arrayId].locations.location_address.replace(/["]/g, "'") : ''}","location_town": "${entry[arrayId].locations.location_town ? entry[arrayId].locations.location_town.replace(/["]/g, "'") : ''}","location_state": "${entry[arrayId].locations.location_state ? entry[arrayId].locations.location_state.replace(/["]/g, "'") : ''}","location_postcode": "${entry[arrayId].locations.location_postcode ? entry[arrayId].locations.location_postcode.replace(/["]/g, "'") : ''}","location_region": "${entry[arrayId].locations.location_region ? entry[arrayId].locations.location_region.replace(/["]/g, "'") : ''}","location_latitude": "${entry[arrayId].locations.location_latitude ? entry[arrayId].locations.location_latitude.replace(/["]/g, "'") : ''}","location_longitude": "${entry[arrayId].locations.location_longitude ? entry[arrayId].locations.location_longitude.replace(/["]/g, "'") : ''}"}`;
+                                singleInformation = JSON.stringify(singleInformation);
                                 localStorage.setItem('aEntry_' + arrayId, singleInformation);
                             });
 
 
                             let toStore = JSON.stringify(flattenedArray);
+                            //localStorage.getItem('aEntry_408')
+                            var locationTest = localStorage.getItem("aEntry_408");
+console.log(locationTest)
+                            //   localStorage.setItem("aLocationsJson", toStore);
                             return JSON.parse(toStore);
                         }).then(data => {
                             resolve(data);
                         });
-                    } else {
+                    // } else {
+                    //     //from localStore to array
 
-                        let storeCachedPoints = [];
+                    //     getStoredData.forEach(element => {
 
-                        // Array aus gespeicherten LocalStore Inhalten
+                    //     });
 
-                        getStoredData.forEach((element, index) => {
-                            let newData = localStorage.getItem('aEntry_' + element);
-            
-                            let newData1 = JSON.parse(newData);
-                            storeCachedPoints[index] = newData1;
-
-                        });
-
-                        resolve(storeCachedPoints);
-                    }
+                    //     resolve(getStoredData);
+                    // }
 
                 });
 
@@ -244,9 +238,8 @@ define(function (require) {
 
                         $(".readmore").click(function (event) {
                             event.preventDefault();
-                            var locationsCached = JSON.parse(localStorage.getItem("aEntry_" + $(this).data('id')));
-
-                            let iD = Object.keys(locationsCached)[0];
+                            var locationsCached = JSON.parse(localStorage.getItem("aLocationsJson"));
+                            var getId = $(this).data('id');
 
                             function windowOnClick(event) {
                                 if (event.target === myModal) {
@@ -255,46 +248,60 @@ define(function (require) {
                             }
 
 
-                            closeButton.addEventListener("click", toggleModal);
-                            window.addEventListener("click", windowOnClick);
-                            let text = locationsCached[iD].freitext;
+                            locationsCached.forEach(function (entry, index) {
+                                let arrayId = Object.keys(entry)[0];
 
-                            let email = locationsCached[iD].email !== "" ? '<a title="E-Mail" class="email" href="mailto:' + locationsCached[iD].email + '"><i class="fa fa-envelope-o" aria-hidden="true"></i>' + locationsCached[iD].email + '</a><br/>' : '';
-                            let linkname = locationsCached[iD].linkname !== "" ? locationsCached[iD].linkname : locationsCached[iD].link_zum_produkt;
-                            let link = locationsCached[iD].link_zum_produkt;
+                                closeButton.addEventListener("click", toggleModal);
+                                window.addEventListener("click", windowOnClick);
+                                if (arrayId == getId) {
 
-                            let location_address = locationsCached[iD].locations.location_address !== "" ? locationsCached[iD].locations.location_address.replace(/["]/g, "'") : '';
-                            let location_postcode = locationsCached[iD].locations !== "" ? locationsCached[iD].locations.location_postcode + ' ' : '';
-                            let location_region = locationsCached[iD].locations !== "" ? locationsCached[iD].locations.location_region : '';
-                            let theTitle = locationsCached[iD].title !== "" ? locationsCached[iD].title.replace(/["]/g, "'") : '';
-                            let barrierefrei = locationsCached[iD].barrierefrei === '1' ? 'barrierefrei <br />' : '';
-                            let telefonnummer = locationsCached[iD].telefonnummer !== "" ? ' <a href=tel:"' + locationsCached[iD].telefonnummer.replace(/[ ]/g, "") + '"> <i class="fa fa-phone-square" aria-hidden="true"></i>' + locationsCached[iD].telefonnummer + '</a>' : '';
-                            let olggeo = ' <a class="mapsgeolink text-center" href="https://maps.google.com/maps?daddr=' + locationsCached[iD].locations.location_latitude + ',' + locationsCached[iD].locations.location_longitude + '&amp;saddr="><i class="fa fa-map-marker" aria-hidden="true"></i> Route hierhin</a> ';
-                            //olg test 20190820
+                                    let text = entry[arrayId].freitext;
+                                    let email = entry[arrayId].email !== "" ? '<a title="E-Mail" class="email" href="mailto:' + entry[arrayId].email + '"><i class="fa fa-envelope-o" aria-hidden="true"></i>' + entry[arrayId].email + '</a><br/>' : '';
+                                    let linkname = entry[arrayId].linkname !== "" ? entry[arrayId].linkname : entry[arrayId].link_zum_produkt;
+                                    let link = entry[arrayId].link_zum_produkt;
+                                    let location_address = entry[arrayId].locations !== "" ? entry[arrayId].locations.location_address.replace(/["]/g, "'") : '';
+                                    let location_postcode = entry[arrayId].locations !== "" ? entry[arrayId].locations.location_postcode + ' ' : '';
+                                    let location_region = entry[arrayId].locations !== "" ? entry[arrayId].locations.location_region : '';
+                                    let theTitle = entry[arrayId].title !== "" ? entry[arrayId].title.replace(/["]/g, "'") : '';
+                                    let barrierefrei = entry[arrayId].barrierefrei === '1' ? 'barrierefrei <br />' : '';
+                                    let telefonnummer = entry[arrayId].telefonnummer !== "" ? ' <a href=tel:"' + entry[arrayId].telefonnummer.replace(/[ ]/g, "") + '"> <i class="fa fa-phone-square" aria-hidden="true"></i>' + entry[arrayId].telefonnummer + '</a>' : '';
+                                    let olggeo = ' <a class="mapsgeolink text-center" href="https://maps.google.com/maps?daddr=' + entry[arrayId].locations.location_latitude + ',' + entry[arrayId].locations.location_longitude + '&amp;saddr="><i class="fa fa-map-marker" aria-hidden="true"></i> Route hierhin</a> ';
+                                    //olg test 20190820
 
-                            if (link && link != '') {
-                                link = '<a href="' + link + '" target="_blank">' + linkname + '</a>';
-                            }
-
-
-                            modalContent.innerHTML = '<h3>' + theTitle + '</h3>';
-                            modalContent.innerHTML += location_address + '<br>';
-                            modalContent.innerHTML += location_postcode;
-                            modalContent.innerHTML += location_region + '<br>';
-                            modalContent.innerHTML += olggeo + '<br>';
-                            modalContent.innerHTML += text;
-                            modalContent.innerHTML += email;
-                            modalContent.innerHTML += telefonnummer + '<br>';
-                            modalContent.innerHTML += link + '<br>';
-                            modalContent.innerHTML += barrierefrei;
-                            modalContent.innerHTML += '<br>';
-
-                            addModal();
+                                    // kategorien
+                                    // Name und addresse (strasse PLZ Ort)
+                                    // Telefon
+                                    // 
 
 
-                            myModal.appendChild(closeButton);
-                            myModal.appendChild(modalContent);
-                            document.body.appendChild(myModal);
+                                    if (link && link != '') {
+                                        link = '<a href="' + link + '" target="_blank">' + linkname + '</a>';
+                                    }
+
+
+                                    modalContent.innerHTML = '<h3>' + theTitle + '</h3>';
+                                    modalContent.innerHTML += location_address + '<br>';
+                                    modalContent.innerHTML += location_postcode;
+                                    modalContent.innerHTML += location_region + '<br>';
+                                    modalContent.innerHTML += olggeo + '<br>';
+                                    modalContent.innerHTML += text;
+                                    modalContent.innerHTML += email;
+                                    modalContent.innerHTML += telefonnummer + '<br>';
+                                    modalContent.innerHTML += link + '<br>';
+                                    modalContent.innerHTML += barrierefrei;
+                                    modalContent.innerHTML += '<br>';
+
+                                    addModal();
+                                }
+
+                                myModal.appendChild(closeButton);
+                                myModal.appendChild(modalContent);
+                                document.body.appendChild(myModal);
+
+                            })
+
+
+
 
                         });
 
