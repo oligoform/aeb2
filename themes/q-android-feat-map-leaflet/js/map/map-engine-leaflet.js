@@ -16,7 +16,7 @@ define(function (require) {
     //var L = require(['theme/leaflet/leaflet', 'theme/js/map/search/leaflet-search']);
     //require('theme/js/map/search/leaflet-search');   
     require('theme/js/map/cluster/leaflet.markercluster');
-    //require('theme/js/map/locateControl/L.Control.Locate');
+    require('theme/js/map/locateControl/L.Control.Locate');
 
 
 
@@ -100,6 +100,11 @@ define(function (require) {
                     zoom: this.get('map_data').get('zoom'),
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
+                L.control.locate({
+                        strings: {
+                                    title: "Zeige meine Position"
+                                    }
+                                    }).addTo(map);
 
 
                 function onEachFeature(feature, layer) {
