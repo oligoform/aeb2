@@ -196,6 +196,9 @@ require(['root/config'],function(Config){
 			if( PhoneGap.isLoaded() ){
 				PhoneGap.setNetworkEvents(App.onOnline,App.onOffline);
 				document.addEventListener('deviceready', launch, false);
+				document.addEventListener("deviceready", function(){
+					navigator.geolocation.getCurrentPosition(onsuccess, onerror, params);
+			   }, false); //olg20190905
 			}else{
 				window.ononline = App.onOnline;
 				window.onoffline = App.onOffline;
