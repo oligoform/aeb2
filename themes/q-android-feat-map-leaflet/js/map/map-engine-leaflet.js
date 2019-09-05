@@ -104,7 +104,7 @@ define(function (require) {
                         strings: {
                                     title: "Zeige meine Position"
                                     }
-                                    }).addTo(map);
+                                    }).addTo(this.get('map_leaflet'));
 
 
                 function onEachFeature(feature, layer) {
