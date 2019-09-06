@@ -112,6 +112,7 @@ define(function (require) {
                     if (feature.properties && feature.properties.popupContent) {
                         layer.bindPopup(feature.properties.popupContent);
                     }
+                    layer.setIcon(new L.DivIcon());
                 }
 
                 const url = 'https://am-eisernen-band.de/wp-json/angebote/all';
