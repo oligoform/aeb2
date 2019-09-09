@@ -15,8 +15,11 @@ define(function (require) {
     var L = require('theme/leaflet/leaflet');
     //var L = require(['theme/leaflet/leaflet', 'theme/js/map/search/leaflet-search']);
     //require('theme/js/map/search/leaflet-search');   
+    //var Locate = require('theme/js/map/locateControl/L.Control.Locate');
+
     require('theme/js/map/cluster/leaflet.markercluster');
-    //require('theme/js/map/locateControl/L.Control.Locate');
+    
+    //require macht PWA Probleme; deshalb test inline js --> klappt auch nicht!
 
 
 
@@ -79,9 +82,9 @@ define(function (require) {
                 function getMoreContent(id, notLocId, freitext) {
                     var readMoreText = document.createElement('a');
                     readMoreText.setAttribute('href', '#single/posts/' + id); //olg test 20190815
-                    readMoreText.setAttribute('class', 'readmore');
+                    readMoreText.setAttribute('class', 'readmore fa fa-window-restore');
                     readMoreText.setAttribute('data-id', notLocId);
-                    readMoreText.innerText = 'mehr erfahren';
+                    readMoreText.innerText = ' Info ';
                     readMoreText.outerHTML.replace(/["]/g, "'");
                     readMoreText.onclick = function (e) {
                         e.preventDefault();
@@ -91,15 +94,61 @@ define(function (require) {
                     return readMoreText.outerHTML.replace(/["]/g, "'");
 
                 }
-
+                
+				var southWest = L.latLng(50.9997, 10.5304),
+				northEast = L.latLng(52.3459, 12.1268),
+				bounds = L.latLngBounds(southWest, northEast);
                 //Initialize Leaflet map:
 
                 var center = [this.get('map_data').get('center').lat, this.get('map_data').get('center').lng];
-                this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')));
+                this.set('map_leaflet', L.map(this.get('id')).setView(center, this.get('map_data').get('zoom')).setMaxBounds(bounds));
                 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     zoom: this.get('map_data').get('zoom'),
+                    maxZoom: 18,
+                minZoom: 9,
+                //maxBounds: bounds,
+               // setMaxBounds: bounds,
+                //maxBoundsViscosity: 1,
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(this.get('map_leaflet'));
+                console.log(L);
+                //this.get('map_leaflet').fitBounds(obj_locations.getBounds());
+
+/*
+                L.control.locate({
+                        strings: {
+                                    title: "Zeige meine Position"
+                                    }
+                                    }).addTo(this.get('map_leaflet'));
+*/
+
+var extentControl = L.Control.extend({
+options: {
+    position: 'topleft'
+},
+onAdd: function (map) {
+    //var llBounds = map.getBounds(); //nimmt ja immer nur die, die beim aktuellen Zoom gezeigt werden; ich will ALLE; deshalb 'bounds'
+    var container = L.DomUtil.create('div', 'extentControl');
+   $(container).css('cursor', 'all-scroll');//.css('width', '26px').css('height', '26px').css('outline', '1px black').css('box-shadow','0 1px 5px rgba(0,0,0,0.65)');
+   $(container).attr('title','alles anzeigen');
+    $(container).html('<i class="fa fa-map-o" aria-hidden="true"></i>');
+    $(container).on('click', function () {
+        map.fitBounds(bounds);
+    });
+    return container;
+   }
+})
+
+this.get('map_leaflet').addControl(new extentControl());
+
+//L.control.watermark({ position: 'bottomleft' }).addTo(this.get('map_data'));
+
+
+
+
+
+
+
 
 
                 function onEachFeature(feature, layer) {
@@ -107,7 +156,8 @@ define(function (require) {
                     if (feature.properties && feature.properties.popupContent) {
                         layer.bindPopup(feature.properties.popupContent);
                     }
-                    layer.setIcon(new L.DivIcon());
+                            layer.setIcon(new L.DivIcon());
+
                 }
 
                 const url = 'https://am-eisernen-band.de/wp-json/angebote/all';
@@ -174,12 +224,12 @@ define(function (require) {
                         let location_postcode = entry[arrayId].locations !== null ? entry[arrayId].locations.location_postcode + ' ' : '';
                         let location_region = entry[arrayId].locations !== null ? entry[arrayId].locations.location_region + '<br />' : '';
                         let theTitle = entry[arrayId].title !== null ? entry[arrayId].title.replace(/["]/g, "'") : '';
-                        let barrierefrei = entry[arrayId].barrierefrei === '1' ? 'barrierefrei <br />' : '';
-                        let email = entry[arrayId].email !== "" ? `<br /> <a href='mailto: ${entry[arrayId].email}'>Email</a><br/>` : ''; //TemplateString MM
-                        let telefonnummer = entry[arrayId].telefonnummer !== "" ? 'Telefon: ' + entry[arrayId].telefonnummer : '';
+                        let barrierefrei = entry[arrayId].barrierefrei === '1' ? "<i class='fa fa-wheelchair' aria-hidden='true'></i>barrierefrei <br />" : "";
+                        let email = entry[arrayId].email !== "" ? ` <a href='mailto: ${entry[arrayId].email}'><i class='fa fa-envelope-o' aria-hidden='true'></i> Email</a>` : ''; //TemplateString MM
+                        let telefonnummer = entry[arrayId].telefonnummer !== "" ? "<i class='fa fa-phone' aria-hidden='true'></i> <span class='sr-only sr-only-focusable'>Telefon: </span>" + entry[arrayId].telefonnummer : '';
                         let freitext = entry[arrayId].freitext;
                         let frei = freitext ? getMoreContent(location_id, arrayId, entry[arrayId].freitext) : '';
-                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} ${email} <br>${frei} </div>`; //olg test 20190815
+                        let popupContent = `<div id='${location_id}'><b>${theTitle}</b> <br /> ${location_address} <br /> ${location_postcode}${location_region}${barrierefrei}${telefonnummer} <footer>${email} ${frei}</footer> </div>`; //olg test 20190815
 
                         obj_locations[index] = `{"type":"Feature","properties": {"name": "${location_name}", "popupContent": "${popupContent}" },
 					   "geometry": {"type": "Point","coordinates": [${entry[arrayId].locations.location_longitude}, ${entry[arrayId].locations.location_latitude}]}}`;
@@ -238,7 +288,7 @@ define(function (require) {
 
                             var locationsCached = fetchedData;
 
-                            // console.log(fetchedData)
+//                             console.log(fetchedData)
                             var getId = $(this).data('id');
 
                             function windowOnClick(event) {
