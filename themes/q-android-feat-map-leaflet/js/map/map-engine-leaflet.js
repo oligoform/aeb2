@@ -240,7 +240,7 @@ this.get('map_leaflet').addControl(new extentControl());
                     var geojsonFeature = obj_locations;
                     geojsonFeature = '{"type": "FeatureCollection", "features": [' + geojsonFeature + ']}'
 
-                    localStorage.setItem("geoJsonData", geojsonFeature);
+                    // localStorage.setItem("geoJsonData", geojsonFeature);
 
                     return geojsonFeature;
 
