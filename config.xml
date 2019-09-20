@@ -3,7 +3,7 @@
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.oligoform.ameisernenband"
         versionCode = ""
-        version     = "1.5" >
+        version     = "1.6" >
 
 	<name>Am Eisernen Band</name>
 
@@ -28,7 +28,7 @@
     <string>Bitte lassen Sie den Zugriff auf Ihren Standort zu, damit wir Ihnen Angebote in Ihrer Nähe zeigen können.</string>
 </edit-config>
 
-<gap:config-file platform="ios" parent="CFBundleDevelopmentRegion" mode="replace">  
+<!-- <gap:config-file platform="ios" parent="CFBundleDevelopmentRegion" mode="replace">  
         <array>  
             <string>en-US</string>  
         </array>  
@@ -38,7 +38,8 @@
             <string>en</string>  
             <string>de</string>          
         </array>  
-    </gap:config-file>  <!-- olg20190820-->
+    </gap:config-file>   -->
+    <!-- olg20190820-->
 
 	<!-- PhoneGap plugin declaration -->
 	<plugin name="cordova-plugin-inappbrowser" spec="~3.1.0" />
